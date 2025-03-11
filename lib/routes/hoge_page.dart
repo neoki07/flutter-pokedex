@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pokedex/app_router.gr.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -48,7 +49,14 @@ class _HomePageState extends State<HomePage> {
                 itemCount: _pokemons.length,
                 itemBuilder: (_, index) {
                   final pokemon = _pokemons[index];
-                  return ListTile(title: Text(pokemon['name']));
+                  return ListTile(
+                    title: Text(pokemon['name']),
+                    onTap: () {
+                      context.router.push(
+                        PokemonDetailRoute(pokemonName: pokemon['name']),
+                      );
+                    },
+                  );
                 },
               ),
     );
