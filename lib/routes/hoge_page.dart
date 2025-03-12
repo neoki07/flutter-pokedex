@@ -26,8 +26,29 @@ class _HomePageState extends State<HomePage> {
       final response = await Dio().get(
         "https://pokeapi.co/api/v2/pokemon?limit=9",
       );
+
+      final results = response.data['results'] as List;
+      List<Map<String, dynamic>> pokemonList = [];
+
+      for (var pokemon in results) {
+        final speciesResponse = await Dio().get(
+          "https://pokeapi.co/api/v2/pokemon-species/${pokemon['name']}",
+        );
+        final speciesData = speciesResponse.data;
+
+        String japaneseName =
+            speciesData['names'] != null
+                ? speciesData['names'].firstWhere(
+                  (name) => name['language']['name'] == 'ja',
+                  orElse: () => {'name': pokemon['name']},
+                )['name']
+                : pokemon['name'];
+
+        pokemonList.add({'name': japaneseName});
+      }
+
       setState(() {
-        _pokemons = response.data['results'];
+        _pokemons = pokemonList;
         _isLoading = false;
       });
     } catch (e) {
